@@ -27,9 +27,10 @@ wifi:
 
 remote_receiver:
   pin:
-    number: GPIO14
+    number: GPIO4
     inverted: True
     mode: OUTPUT_OPEN_DRAIN
+    allow_other_uses: True
   tolerance: 55%
   id: ir_receiver
   buffer_size: 2kb
@@ -40,15 +41,16 @@ remote_transmitter:
     number: GPIO4
     inverted: True
     mode: OUTPUT_OPEN_DRAIN
+    allow_other_uses: True
 
 climate:
   - platform: panaac
     name: "Remote Controller"
     receiver_id: ir_receiver
-    supports_heat: True
-    supports_quiet: True
-    fan_5level: True
-    swing_horizontal: True
+    supports_heat: true
+    supports_quiet: true
+    fan_5level: true
+    swing_horizontal: false
     temp_step: 0.5
     
     
