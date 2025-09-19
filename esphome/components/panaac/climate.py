@@ -15,7 +15,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import climate_ir, select
-from esphome.const import CONF_ID
+from esphome.const import CONF_ID, CONF_NAME, CONF_DISABLED_BY_DEFAULT
 
 AUTO_LOAD = ['climate_ir','select']
 
@@ -55,31 +55,29 @@ async def to_code(config):
     cg.add(var.set_fan_5level(config[CONF_FAN_5LEVEL]))
 
     # Fan level select
+    fanlevel_default_config = { CONF_ID: config[CONF_FANLEVEL_ID],
+                                CONF_NAME: "- Fan Level",
+                                CONF_DISABLED_BY_DEFAULT: False}
     fanlevel = cg.new_Pvariable(config[CONF_FANLEVEL_ID])
-    cg.add(fanlevel.set_name("- Fan Level"))
-    cg.add(fanlevel.set_object_id("fanlevel"))
-    cg.add(fanlevel.set_internal(False))    
+    await select.register_select(fanlevel, fanlevel_default_config, options=[])
+    await cg.register_component(fanlevel, fanlevel_default_config)
     cg.add(fanlevel.set_parent_climate(var))
-    cg.add(cg.App.register_component(fanlevel))
-    cg.add(cg.App.register_select(fanlevel))
     cg.add(var.set_fanlevel(fanlevel))
     
     # SwingV select
+    swingv_default_config = {   CONF_ID: config[CONF_SWINGV_ID],
+                                CONF_NAME: "- Swing Vertical",
+                                CONF_DISABLED_BY_DEFAULT: False}
     swingv = cg.new_Pvariable(config[CONF_SWINGV_ID])
-    cg.add(swingv.set_name("- Swing Vertical"))
-    cg.add(swingv.set_object_id("swingv"))
-    cg.add(swingv.set_internal(False))    
-    cg.add(swingv.set_parent_climate(var))
-    cg.add(cg.App.register_component(swingv))
-    cg.add(cg.App.register_select(swingv))
+    await select.register_select(swingv, swingv_default_config, options=[])
+    await cg.register_component(swingv, swingv_default_config)
     cg.add(var.set_swingv(swingv))
 
     # SwingH select
+    swingh_default_config = {   CONF_ID: config[CONF_SWINGH_ID],
+                                CONF_NAME: "- Swing Horizontal",
+                                CONF_DISABLED_BY_DEFAULT: False}
     swingh = cg.new_Pvariable(config[CONF_SWINGH_ID])
-    cg.add(swingh.set_name("- Swing Horizontal"))
-    cg.add(swingh.set_object_id("swingh"))
-    cg.add(swingh.set_internal(False))    
-    cg.add(swingh.set_parent_climate(var))
-    cg.add(cg.App.register_component(swingh))
-    cg.add(cg.App.register_select(swingh))
+    await select.register_select(swingh, swingh_default_config, options=[])
+    await cg.register_component(swingh, swingh_default_config)
     cg.add(var.set_swingh(swingh))
