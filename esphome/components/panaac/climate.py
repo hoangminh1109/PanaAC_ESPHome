@@ -29,6 +29,7 @@ CONF_SWING_HORIZONTAL = "swing_horizontal"
 CONF_TEMP_STEP = "temp_step"
 CONF_SUPPORT_QUIET = "supports_quiet"
 CONF_FAN_5LEVEL = "fan_5level"
+CONF_IR_CONTROL = "ir_control"
 
 CONF_SWINGV_ID = "swingv_id"
 CONF_SWINGH_ID = "swingh_id"
@@ -43,6 +44,7 @@ CONFIG_SCHEMA = climate_ir.climate_ir_with_receiver_schema(PanaACClimate).extend
     cv.Optional(CONF_TEMP_STEP, default=1.0): cv.float_,
     cv.Optional(CONF_SUPPORT_QUIET, default=False): cv.boolean,
     cv.Optional(CONF_FAN_5LEVEL, default=False): cv.boolean,
+    cv.Optional(CONF_IR_CONTROL, default=False): cv.boolean,
 })
 
 async def to_code(config):
@@ -53,6 +55,7 @@ async def to_code(config):
     cg.add(var.set_temp_step(config[CONF_TEMP_STEP]))
     cg.add(var.set_supports_quiet(config[CONF_SUPPORT_QUIET]))
     cg.add(var.set_fan_5level(config[CONF_FAN_5LEVEL]))
+    cg.add(var.set_ir_control(config[CONF_IR_CONTROL]))
 
     # Fan level select
     fanlevel_default_config = { CONF_ID: config[CONF_FANLEVEL_ID],

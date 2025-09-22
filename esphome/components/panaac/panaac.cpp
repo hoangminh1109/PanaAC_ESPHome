@@ -538,6 +538,12 @@ namespace esphome
 
             auto transmit = this->transmitter_->transmit();
             auto *data = transmit.get_data();
+
+            //set transmit frequency
+            if (this->ir_control_)
+            {
+                data->set_carrier_frequency(PANAAC_IR_TRANSMIT_FREQ);
+            }
           
             // First frame
             data->mark(PANAAC_HEADER_MARK);

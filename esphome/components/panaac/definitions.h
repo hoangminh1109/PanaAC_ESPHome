@@ -42,6 +42,9 @@ namespace esphome
         const uint16_t PANAAC_HEADER_MARK = 3650;
         const uint16_t PANAAC_HEADER_SPACE = 1600;
         const uint16_t PANAAC_FRAME_END = 10000;
+
+        // IR transmit frequency
+        const uint16_t PANAAC_IR_TRANSMIT_FREQ = 38000;
         
         // byte position
         const uint8_t PANAAC_BYTEPOS_POWER = 5;
