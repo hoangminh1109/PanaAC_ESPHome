@@ -71,6 +71,7 @@ async def to_code(config):
     swingv = cg.new_Pvariable(config[CONF_SWINGV_ID])
     await select.register_select(swingv, swingv_default_config, options=[])
     await cg.register_component(swingv, swingv_default_config)
+    cg.add(swingv.set_parent_climate(var))
     cg.add(var.set_swingv(swingv))
 
     # SwingH select
@@ -80,4 +81,5 @@ async def to_code(config):
     swingh = cg.new_Pvariable(config[CONF_SWINGH_ID])
     await select.register_select(swingh, swingh_default_config, options=[])
     await cg.register_component(swingh, swingh_default_config)
+    cg.add(swingh.set_parent_climate(var))
     cg.add(var.set_swingh(swingh))
