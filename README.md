@@ -30,11 +30,25 @@ It **inherits from ESPHome's `ClimateIR`** and adds support for:
 ## 📦 Requirements
 
 - ESP32 or ESP8266 board
-- Physical access to Panasonic AC IR board
-- Wiring Panasonic AC IR board with ESP board
-    - ESP GND <-> Pana AC IR board's GND
-    - ESP 3V3 <-> Pana AC IR board's VCC
-    - ESP GPIO <--> Pana AC IR board's IR Led output
+You have 2 options to install ESPHome module to you AC.
+
+- 1. Invasive way: You must have physical access to Panasonic AC IR board
+    - Wiring Panasonic AC IR board with ESP board
+        - ESP GND <-> Pana AC IR board's GND
+        - ESP 3V3 <-> Pana AC IR board's VCC
+        - ESP GPIO <--> Pana AC IR board's IR Led output
+- 2. Non-invasive way: If you don't want to mod your AC IR board (invasive way), you have choice to do as below
+    - Make your own IR led receiver and IR led transmitter circuit (via transistor). Schematic is everywhere on Internet.
+    - Connect IR led receiver circuit and IR led transmitter circuit to ESP GPIOs.
+    - Configure ESPHome yaml `remote_receiver` and `remote_transmitter` with respective GPIOs.
+    - One important thing is, you have to install your ESP8266 module near the the AC indoor unit:
+        - It has to be able to receive signal from physical remote same as AC unit.
+        - Its IR transmitter led has to point to the AC IR module, so the command sends from it can come to the AC.
+    - This way, you have to additionally configure the `panaac` climate with `ir_control: True`
+- NOTE
+    - Method 1 brings much more stability and performance, as it captures the IR signal and feeds the control command directly to AC IR board.
+    - Recommendation: during testing phase, you can use method 2, but for long-term usage it's highly recommend to install it as method 1.
+
 
 ---
 
@@ -53,6 +67,7 @@ It **inherits from ESPHome's `ClimateIR`** and adds support for:
         fan_5level: True
         swing_horizontal: True
         temp_step: 0.5
+        ir_control: False
     ```
 
 ---

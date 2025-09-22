@@ -52,5 +52,6 @@ climate:
     fan_5level: true
     swing_horizontal: false
     temp_step: 0.5
+    ir_control: false
     
     
