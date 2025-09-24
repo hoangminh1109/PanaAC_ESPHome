@@ -62,6 +62,7 @@ namespace esphome
         const uint8_t PANAAC_MODE_DRY = 0x20;
         const uint8_t PANAAC_MODE_COOL = 0x30;
         const uint8_t PANAAC_MODE_HEAT = 0x40;
+        const uint8_t PANAAC_MODE_FAN_ONLY = 0x60;
         const uint8_t PANAAC_MODE_AUTO = 0x00;
 
         enum FanLevel {

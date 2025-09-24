@@ -25,6 +25,7 @@ PanaACFanLevel = panaac_ns.class_('PanaACFanLevel', select.Select, cg.Component)
 PanaACSwingV = panaac_ns.class_('PanaACSwingV', select.Select, cg.Component)
 PanaACSwingH = panaac_ns.class_('PanaACSwingH', select.Select, cg.Component)
 
+CONF_SUPPORT_FAN_ONLY = "supports_fan_only"
 CONF_SWING_HORIZONTAL = "swing_horizontal"
 CONF_TEMP_STEP = "temp_step"
 CONF_SUPPORT_QUIET = "supports_quiet"
@@ -43,6 +44,7 @@ CONFIG_SCHEMA = climate_ir.climate_ir_with_receiver_schema(PanaACClimate).extend
     cv.Optional(CONF_SWING_HORIZONTAL, default=False): cv.boolean,
     cv.Optional(CONF_TEMP_STEP, default=1.0): cv.float_,
     cv.Optional(CONF_SUPPORT_QUIET, default=False): cv.boolean,
+    cv.Optional(CONF_SUPPORT_FAN_ONLY, default=False): cv.boolean,
     cv.Optional(CONF_FAN_5LEVEL, default=False): cv.boolean,
     cv.Optional(CONF_IR_CONTROL, default=False): cv.boolean,
 })
@@ -53,6 +55,7 @@ async def to_code(config):
     # await climate_ir.register_climate_ir(var, config)
     cg.add(var.set_swing_horizontal(config[CONF_SWING_HORIZONTAL]))
     cg.add(var.set_temp_step(config[CONF_TEMP_STEP]))
+    cg.add(var.set_supports_fan_only(config[CONF_SUPPORT_FAN_ONLY]))
     cg.add(var.set_supports_quiet(config[CONF_SUPPORT_QUIET]))
     cg.add(var.set_fan_5level(config[CONF_FAN_5LEVEL]))
     cg.add(var.set_ir_control(config[CONF_IR_CONTROL]))

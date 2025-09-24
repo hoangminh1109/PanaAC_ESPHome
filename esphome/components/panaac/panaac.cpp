@@ -99,6 +99,8 @@ namespace esphome
                 traits.add_supported_mode(climate::CLIMATE_MODE_COOL);
             if (this->supports_heat_)
                 traits.add_supported_mode(climate::CLIMATE_MODE_HEAT);
+            if (this->supports_fan_only_)
+                traits.add_supported_mode(climate::CLIMATE_MODE_FAN_ONLY);
             
             // Default to only 3 levels in ESPHome
             traits.set_supported_fan_modes(
@@ -173,7 +175,7 @@ namespace esphome
                 state_bytes.push_back(byte);
             }
 
-#if(DEBUG)
+#if (ESPHOME_LOG_LEVEL == ESPHOME_LOG_LEVEL_VERBOSE)
             std::string hex_str = "";
             for (uint8_t i = 0; i < state_bytes.size(); i++)
             {
@@ -182,7 +184,7 @@ namespace esphome
                 hex_str += buf;
             }
             
-            ESP_LOGV(TAG, "Full packet received: len = %d, data = [ %s]", state_bytes.size(), hex_str.c_str());
+            ESP_LOGV(TAG, "Command decoded: len = %d, data = [ %s]", state_bytes.size(), hex_str.c_str());
 #endif
 
             // in case of full frame, just crop the first 8 fixed bytes
@@ -239,6 +241,9 @@ namespace esphome
                         break;
                     case PANAAC_MODE_HEAT:
                         ac_state.mode = climate::CLIMATE_MODE_HEAT;
+                        break;
+                    case PANAAC_MODE_FAN_ONLY:
+                        ac_state.mode = climate::CLIMATE_MODE_FAN_ONLY;
                         break;
                     case PANAAC_MODE_AUTO:
                     default:
@@ -324,9 +329,10 @@ namespace esphome
         }
 
         bool PanaACClimate::on_receive(remote_base::RemoteReceiveData data) {
-            ESP_LOGV(TAG, "Received some bytes");
 
             auto raw_data = data.get_raw_data();
+
+            ESP_LOGV(TAG, "Received raw data size = %d", raw_data.size());
 
 #if(DEBUG)
             for (uint32_t i = 0; i < raw_data.size(); i++)
@@ -340,9 +346,12 @@ namespace esphome
             {
                 if (raw_data.size() == 132) // fixed 1st frame
                 {
-                    ESP_LOGV(TAG, "Ignore fixed 1st frame");
+                    ESP_LOGV(TAG, "Ignored first frame!");
                 }
-                ESP_LOGV(TAG, "Ir data length not expected");
+                else
+                {
+                    ESP_LOGV(TAG, "Unexpected data length received.");
+                }
                 return false;
             }
             
@@ -353,7 +362,7 @@ namespace esphome
                 return false;
             }
 
-#if(DEBUG)            
+#if (ESPHOME_LOG_LEVEL == ESPHOME_LOG_LEVEL_VERBOSE)
             std::string hex_str = "";
             for (uint8_t i = 0; i < state_bytes.size(); i++)
             {
@@ -362,8 +371,7 @@ namespace esphome
                 hex_str += buf;
             }
             
-            ESP_LOGD(TAG, "Received Panasonic AC IR state: len = %d, data = [ %s]", state_bytes.size(), hex_str.c_str());
-            ESP_LOGV(TAG, "Finished receiving");
+            ESP_LOGV(TAG, "Finish receiveing Panasonic AC IR state: len = %d, data = [ %s]", state_bytes.size(), hex_str.c_str());
 #endif            
             
             if (!decode_state(state_bytes, ac_state))
@@ -378,7 +386,15 @@ namespace esphome
                 ESP_LOGV(TAG, "Heat mode not supported");
                 return false;
             }
+
+            // receiving FAN_ONLY but doesn't support FAN_ONLY
+            if (!this->supports_fan_only_ && ac_state.mode == climate::CLIMATE_MODE_FAN_ONLY)
+            {
+                ESP_LOGV(TAG, "Fan only mode not supported");
+                return false;
+            }
             
+
             this->mode = ac_state.mode;
             this->target_temperature = ac_state.temp;
             this->fan_mode = ac_state.fan_mode;
@@ -417,6 +433,10 @@ namespace esphome
                 case climate::CLIMATE_MODE_DRY:
                     second_frame[PANAAC_BYTEPOS_POWER] |= PANAAC_POWER_ON;
                     second_frame[PANAAC_BYTEPOS_MODE]  |= PANAAC_MODE_DRY;
+                    break;
+                case climate::CLIMATE_MODE_FAN_ONLY:
+                    second_frame[PANAAC_BYTEPOS_POWER] |= PANAAC_POWER_ON;
+                    second_frame[PANAAC_BYTEPOS_MODE]  |= PANAAC_MODE_FAN_ONLY;
                     break;
                 case climate::CLIMATE_MODE_AUTO:
                     second_frame[PANAAC_BYTEPOS_POWER] |= PANAAC_POWER_ON;
@@ -524,7 +544,7 @@ namespace esphome
                 second_frame[18] += second_frame[i];
             }
 
-#if(DEBUG)            
+#if (ESPHOME_LOG_LEVEL == ESPHOME_LOG_LEVEL_VERBOSE)            
             std::string hex_str = "";
             for (uint8_t i = 0; i < second_frame.size(); i++)
             {
@@ -533,7 +553,7 @@ namespace esphome
                 hex_str += buf;
             }
             
-            ESP_LOGD(TAG, "Sending Panasonic AC IR state: len = %d, data = [ %s]", second_frame.size(), hex_str.c_str());
+            ESP_LOGV(TAG, "Sending Panasonic AC IR state: len = %d, data = [ %s]", second_frame.size(), hex_str.c_str());
 #endif            
 
             auto transmit = this->transmitter_->transmit();

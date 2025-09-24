@@ -44,6 +44,7 @@ namespace esphome
             void set_swing_horizontal(bool swing_horizontal) { this->swing_horizontal_ = swing_horizontal; }
             void set_temp_step(float temp_step) { this->temp_step_ = temp_step; }
             void set_supports_quiet(bool supports_quiet) { this->supports_quiet_ = supports_quiet; }
+            void set_supports_fan_only(bool supports_fan_only) { this->supports_fan_only_ = supports_fan_only; }
             void set_fan_5level(bool fan_5level) { this->fan_5level_ = fan_5level; }
             void set_ir_control(bool ir_control) { this->ir_control_ = ir_control; }
 
@@ -70,6 +71,7 @@ namespace esphome
             bool supports_quiet_;
             bool fan_5level_;
             bool ir_control_;
+            bool supports_fan_only_;
 
             PanaACFanLevel *fanlevel_{nullptr};
             PanaACSwingV *swingv_{nullptr};
