@@ -35,7 +35,7 @@ You have 2 options to install ESPHome module to you AC.
 - 1. Invasive way: You must have physical access to Panasonic AC IR board
     - Wiring Panasonic AC IR board with ESP board
         - ESP GND <-> Pana AC IR board's GND
-        - ESP 3V3 <-> Pana AC IR board's VCC
+        - ESP 5V <-> Pana AC IR board's VCC (make sure your AC IR board supplies 5V)
         - ESP GPIO <--> Pana AC IR board's IR Led output
 - 2. Non-invasive way: If you don't want to mod your AC IR board (invasive way), you have choice to do as below
     - Make your own IR led receiver and IR led transmitter circuit (via transistor). Schematic is everywhere on Internet.
@@ -78,4 +78,12 @@ Here is how the component appears in Home Assistant:
 
 ![Panasonic AC in Home Assistant](assets/screenshot_panaac.png)
 ![Panasonic AC Climate control in Home Assistant](assets/screenshot_panaac_climate.png)
+
+## ⚠️ Known issue
+
+The panaac component has been tested with ESP8266 and ESP32 using below Panasonic AC remotes with QKH, TKH, SKH units.
+
+![Panasonic tested remotes](assets/panaac_remotes.png)
+
+Issue: Signal from remote number 2 doesn't seems to be recognized by the ESP32 (push buttons on physiscal remote but doesn't reflect on ESPHome), while it works well with ESP8266.
 
