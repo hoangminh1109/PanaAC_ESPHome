@@ -1,7 +1,7 @@
 esphome:
   name: "ac-test"
   friendly_name: Test AC
-  min_version: 2024.11.0
+  min_version: 2025.9.0
   name_add_mac_suffix: false
 
 external_components:
@@ -34,6 +34,7 @@ remote_receiver:
   tolerance: 55%
   id: ir_receiver
   buffer_size: 2kb
+  idle: 5ms
 
 remote_transmitter:
   carrier_duty_percent: 50%
