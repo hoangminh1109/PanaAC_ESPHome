@@ -175,7 +175,7 @@ namespace esphome
                 state_bytes.push_back(byte);
             }
 
-#if (ESPHOME_LOG_LEVEL == ESPHOME_LOG_LEVEL_VERBOSE)
+#if (ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE)
             std::string hex_str = "";
             for (uint8_t i = 0; i < state_bytes.size(); i++)
             {
@@ -334,10 +334,10 @@ namespace esphome
 
             ESP_LOGV(TAG, "Received raw data size = %d", raw_data.size());
 
-#if(DEBUG)
+#if (ESPHOME_LOG_LEVEL == ESPHOME_LOG_LEVEL_VERY_VERBOSE)
             for (uint32_t i = 0; i < raw_data.size(); i++)
             {
-                ESP_LOGV(TAG, "Raw data index = %d, data = %d", i, raw_data[i]);
+                ESP_LOGVV(TAG, "Raw data index = %d, data = %d", i, raw_data[i]);
             }
 #endif
             
@@ -362,7 +362,7 @@ namespace esphome
                 return false;
             }
 
-#if (ESPHOME_LOG_LEVEL == ESPHOME_LOG_LEVEL_VERBOSE)
+#if (ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE)
             std::string hex_str = "";
             for (uint8_t i = 0; i < state_bytes.size(); i++)
             {
@@ -544,7 +544,7 @@ namespace esphome
                 second_frame[18] += second_frame[i];
             }
 
-#if (ESPHOME_LOG_LEVEL == ESPHOME_LOG_LEVEL_VERBOSE)            
+#if (ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE)            
             std::string hex_str = "";
             for (uint8_t i = 0; i < second_frame.size(); i++)
             {

@@ -23,8 +23,6 @@
 #include <cstdlib>
 #include <cinttypes>
 
-#define DEBUG false
-
 namespace esphome
 {
     namespace panaac
