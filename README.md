@@ -91,7 +91,7 @@ You have 2 options to install ESPHome module to you AC.
                 ir_control: false
         ```
 
-    - If you're installing the ESPHome device as a separated device and communicate with AC with real IR leds (non-invasive way), use different GPIO pins for `remote_receiver` and `remote_transmitter`. **Additionaly parameter `ir_control` needs to be False**.
+    - If you're installing the ESPHome device as a separated device and communicate with AC with real IR leds (non-invasive way), use different GPIO pins for `remote_receiver` and `remote_transmitter`. **Additionaly parameter `ir_control` needs to be True**.
 
         ```yaml
         remote_receiver:
