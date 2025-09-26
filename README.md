@@ -37,9 +37,15 @@ You have 2 options to install ESPHome module to you AC.
         - ESP GND <-> Pana AC IR board's GND
         - ESP 5V <-> Pana AC IR board's VCC (make sure your AC IR board supplies 5V)
         - ESP GPIO <--> Pana AC IR board's IR Led output
+
+    ![Wiring directly to AC IR board](assets/panaac_wiring_direct.png)
+
 - **2. Non-invasive way:** If you don't want to mod your AC IR board (invasive way), you have choice to do as below
-    - Make your own IR led receiver and IR led transmitter circuit (via transistor). Schematic is everywhere on Internet.
+    - Make your own IR led receiver and IR led transmitter circuit (via transistor). Refer below schematic.
     - Connect IR led receiver circuit and IR led transmitter circuit to ESP GPIOs.
+
+    ![Wiring IR leds](assets/panaac_wiring_irleds.png)
+
     - Configure ESPHome yaml `remote_receiver` and `remote_transmitter` with respective GPIOs.
     - One important thing is, you have to install your ESP8266 module near the the AC indoor unit:
         - It has to be able to receive signal from physical remote same as AC unit.
