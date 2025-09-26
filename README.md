@@ -47,7 +47,7 @@ You have 2 options to install ESPHome module to you AC.
     - This way, you have to additionally configure the `panaac` climate with `ir_control: True`
 - **NOTE:**
     - Method 1 brings much more stability and performance, as it captures the IR signal and feeds the control command directly to AC IR board.
-    - Recommendation: during testing phase, you can use method 2, but for long-term usage it's highly recommend to install it as method 1.
+    - **Recommendation:** during testing phase, you can use method 2, but for long-term usage it's highly recommended to install it as method 1.
 
 
 ---
