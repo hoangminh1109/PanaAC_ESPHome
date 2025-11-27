@@ -37,22 +37,32 @@ namespace esphome
             ac_state.last_swing_h_pos = PANAAC_SWINGH_MIDDLE;
 
             // fan level options
+            FixedVector<const char *> fanlevel_options;
+            fanlevel_options.init(7);
             if (this->fan_5level_)
             {
-                this->fanlevel_->traits.set_options({STR_FAN_AUTO, STR_FAN_L1, STR_FAN_L2, STR_FAN_L3, STR_FAN_L4, STR_FAN_L5});
+                fanlevel_options.push_back(STR_FAN_AUTO);
+                fanlevel_options.push_back(STR_FAN_L1);
+                fanlevel_options.push_back(STR_FAN_L2);
+                fanlevel_options.push_back(STR_FAN_L3);
+                fanlevel_options.push_back(STR_FAN_L4);
+                fanlevel_options.push_back(STR_FAN_L5);
             }
             else
             {
-                this->fanlevel_->traits.set_options({STR_FAN_AUTO, STR_FAN_L1, STR_FAN_L3, STR_FAN_L5});
+                fanlevel_options.push_back(STR_FAN_AUTO);
+                fanlevel_options.push_back(STR_FAN_L1);
+                fanlevel_options.push_back(STR_FAN_L3);
+                fanlevel_options.push_back(STR_FAN_L5);
             }
 
             // support quiet
             if (this->supports_quiet_)
             {
-                std::vector<std::string> fanlevel_options = this->fanlevel_->traits.get_options();
                 fanlevel_options.push_back(STR_FAN_QUIET);
-                this->fanlevel_->traits.set_options(fanlevel_options);
             }
+
+            this->fanlevel_->traits.set_options(fanlevel_options);
 
             // swing v options
             this->swingv_->traits.set_options({STR_SWINGV_AUTO, STR_SWINGV_HIGHEST, STR_SWINGV_HIGH, STR_SWINGV_MIDDLE, STR_SWINGV_LOW, STR_SWINGV_LOWEST});
@@ -88,8 +98,15 @@ namespace esphome
         climate::ClimateTraits PanaACClimate::traits() {
             
             auto traits = climate::ClimateTraits();
-            traits.set_supports_current_temperature(this->sensor_ != nullptr);
-            traits.set_supports_action(false);
+            if (this->sensor_ != nullptr)
+            {
+                traits.add_feature_flags(climate::ClimateFeature::CLIMATE_SUPPORTS_CURRENT_TEMPERATURE);
+            }
+            else
+            {
+                traits.clear_feature_flags(climate::ClimateFeature::CLIMATE_SUPPORTS_CURRENT_TEMPERATURE);
+            }
+            traits.clear_feature_flags(climate::ClimateFeature::CLIMATE_SUPPORTS_ACTION);
             traits.set_visual_min_temperature(PANAAC_TEMP_MIN);
             traits.set_visual_max_temperature(PANAAC_TEMP_MAX);
             traits.set_visual_temperature_step(this->temp_step_);
