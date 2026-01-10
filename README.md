@@ -1,5 +1,9 @@
 # Panasonic AC IR Remote Controller for ESPHome
 
+**_This project is maintained in my free time. A coffee ☕ is always appreciated!_**
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/hoangminh1109)
+
 This is a custom ESPHome external component for controlling Panasonic air conditioners via infrared.
 
 It **inherits from ESPHome's `ClimateIR`** and adds support for:
