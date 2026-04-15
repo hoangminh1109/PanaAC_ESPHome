@@ -81,11 +81,12 @@ async def to_code(config):
     cg.add(var.set_swingv(swingv))
 
     # SwingH select
-    swingh_default_config = {   CONF_ID: config[CONF_SWINGH_ID],
-                                CONF_NAME: "- Swing Horizontal",
-                                CONF_DISABLED_BY_DEFAULT: False}
-    swingh = cg.new_Pvariable(config[CONF_SWINGH_ID])
-    await select.register_select(swingh, swingh_default_config, options=[])
-    await cg.register_component(swingh, swingh_default_config)
-    cg.add(swingh.set_parent_climate(var))
-    cg.add(var.set_swingh(swingh))
+    if config[CONF_SWING_HORIZONTAL]:
+        swingh_default_config = {   CONF_ID: config[CONF_SWINGH_ID],
+                                    CONF_NAME: "- Swing Horizontal",
+                                    CONF_DISABLED_BY_DEFAULT: False}
+        swingh = cg.new_Pvariable(config[CONF_SWINGH_ID])
+        await select.register_select(swingh, swingh_default_config, options=[])
+        await cg.register_component(swingh, swingh_default_config)
+        cg.add(swingh.set_parent_climate(var))
+        cg.add(var.set_swingh(swingh))

@@ -70,12 +70,6 @@ namespace esphome
             if (this->swing_horizontal_)
             {
                 this->swingh_->traits.set_options({STR_SWINGH_AUTO, STR_SWINGH_LEFTMAX, STR_SWINGH_LEFT, STR_SWINGH_MIDDLE, STR_SWINGH_RIGHT, STR_SWINGH_RIGHTMAX});
-                this->swingh_->set_internal(false);
-            }
-            else
-            {
-                this->swingh_->traits.set_options({});
-                this->swingh_->set_internal(true);
             }
 
             // initial state
@@ -732,6 +726,14 @@ namespace esphome
             this->fan_mode = ac_state.fan_mode;
             this->swing_mode = ac_state.swing_mode;
             transmit_data();
+
+            // update state of additional selects
+            this->fanlevel_->set_fanlevel(ac_state.fan_level);
+            this->swingv_->set_swingvpos(ac_state.swing_v_pos);
+            if (this->swing_horizontal_)
+            {
+                this->swingh_->set_swinghpos(ac_state.swing_h_pos);
+            }
 
             this->publish_state();
 
