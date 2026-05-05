@@ -54,8 +54,9 @@ namespace esphome
         const uint8_t PANAAC_BYTEPOS_QUIET = 13;
         
         // byte values
-        const uint8_t PANAAC_POWER_OFF = 0x08;
-        const uint8_t PANAAC_POWER_ON = 0x09;
+        const uint8_t PANAAC_POWER_MASK = 0x01;  // only bit 0 encodes power state
+        const uint8_t PANAAC_POWER_OFF = 0x00;   // bit 0 = 0 → OFF
+        const uint8_t PANAAC_POWER_ON  = 0x01;   // bit 0 = 1 → ON
 
         const uint8_t PANAAC_MODE_DRY = 0x20;
         const uint8_t PANAAC_MODE_COOL = 0x30;

@@ -236,7 +236,7 @@ namespace esphome
             }
             
             // operation mode
-            if ((state_bytes[PANAAC_BYTEPOS_POWER] & 0x0F) == PANAAC_POWER_OFF)
+            if ((state_bytes[PANAAC_BYTEPOS_POWER] & PANAAC_POWER_MASK) == PANAAC_POWER_OFF)
             {
                 ac_state.mode = climate::CLIMATE_MODE_OFF;
             }
