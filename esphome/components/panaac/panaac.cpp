@@ -104,14 +104,16 @@ namespace esphome
             traits.set_visual_min_temperature(PANAAC_TEMP_MIN);
             traits.set_visual_max_temperature(PANAAC_TEMP_MAX);
             traits.set_visual_temperature_step(this->temp_step_);
-            traits.set_supported_modes({climate::CLIMATE_MODE_OFF, climate::CLIMATE_MODE_AUTO, climate::CLIMATE_MODE_DRY});
-            
+            traits.set_supported_modes({climate::CLIMATE_MODE_OFF});
+            if (this->supports_fan_only_)
+                traits.add_supported_mode(climate::CLIMATE_MODE_FAN_ONLY);
+            traits.add_supported_mode(climate::CLIMATE_MODE_AUTO);
+            traits.add_supported_mode(climate::CLIMATE_MODE_DRY);
+
             if (this->supports_cool_)
                 traits.add_supported_mode(climate::CLIMATE_MODE_COOL);
             if (this->supports_heat_)
                 traits.add_supported_mode(climate::CLIMATE_MODE_HEAT);
-            if (this->supports_fan_only_)
-                traits.add_supported_mode(climate::CLIMATE_MODE_FAN_ONLY);
             
             // Default to only 3 levels in ESPHome
             traits.set_supported_fan_modes(
