@@ -14,7 +14,7 @@
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import climate_ir, select
+from esphome.components import climate_ir, select, switch
 from esphome.const import CONF_ID, CONF_NAME, CONF_DISABLED_BY_DEFAULT
 
 AUTO_LOAD = ['climate_ir','select']
@@ -32,21 +32,30 @@ CONF_SUPPORT_QUIET = "supports_quiet"
 CONF_FAN_5LEVEL = "fan_5level"
 CONF_IR_CONTROL = "ir_control"
 
+CONF_SUPPORT_POWERFUL = "supports_powerful"
+CONF_SUPPORT_ECO = "supports_eco"
+
 CONF_SWINGV_ID = "swingv_id"
 CONF_SWINGH_ID = "swingh_id"
 CONF_FANLEVEL_ID = "fanlevel_id"
+CONF_POWERFUL_ID = "powerful_id"
+CONF_ECO_ID = "eco_id"
 
 CONFIG_SCHEMA = climate_ir.climate_ir_with_receiver_schema(PanaACClimate).extend({
     cv.GenerateID(): cv.declare_id(PanaACClimate),
     cv.GenerateID(CONF_SWINGV_ID): cv.declare_id(PanaACSwingV),
     cv.GenerateID(CONF_SWINGH_ID): cv.declare_id(PanaACSwingH),
     cv.GenerateID(CONF_FANLEVEL_ID): cv.declare_id(PanaACFanLevel),
+    cv.GenerateID(CONF_POWERFUL_ID): cv.declare_id(PanaACPowerful),
+    cv.GenerateID(CONF_ECO_ID): cv.declare_id(PanaACEco),
     cv.Optional(CONF_SWING_HORIZONTAL, default=False): cv.boolean,
     cv.Optional(CONF_TEMP_STEP, default=1.0): cv.float_,
     cv.Optional(CONF_SUPPORT_QUIET, default=False): cv.boolean,
     cv.Optional(CONF_SUPPORT_FAN_ONLY, default=False): cv.boolean,
     cv.Optional(CONF_FAN_5LEVEL, default=False): cv.boolean,
     cv.Optional(CONF_IR_CONTROL, default=False): cv.boolean,
+    cv.Optional(CONF_SUPPORT_POWERFUL, default=False): cv.boolean,
+    cv.Optional(CONF_SUPPORT_ECO, default=False): cv.boolean,
 })
 
 async def to_code(config):
@@ -59,6 +68,8 @@ async def to_code(config):
     cg.add(var.set_supports_quiet(config[CONF_SUPPORT_QUIET]))
     cg.add(var.set_fan_5level(config[CONF_FAN_5LEVEL]))
     cg.add(var.set_ir_control(config[CONF_IR_CONTROL]))
+    cg.add(var.set_supports_powerful(config[CONF_SUPPORT_POWERFUL]))
+    cg.add(var.set_supports_eco(config[CONF_SUPPORT_ECO]))
 
     # Fan level select
     fanlevel_default_config = { CONF_ID: config[CONF_FANLEVEL_ID],
@@ -90,3 +101,29 @@ async def to_code(config):
         await cg.register_component(swingh, swingh_default_config)
         cg.add(swingh.set_parent_climate(var))
         cg.add(var.set_swingh(swingh))
+
+    # Powerful switch
+    if config[CONF_SUPPORT_POWERFUL]:
+        powerful_default_config = { CONF_ID: config[CONF_POWERFUL_ID],
+                                    CONF_NAME: "- Powerful Mode",
+                                    CONF_DISABLED_BY_DEFAULT: False}
+        if device_config:
+            powerful_default_config[CONF_DEVICE] = device_config
+        powerful = cg.new_Pvariable(config[CONF_POWERFUL_ID])
+        await switch.register_switch(powerful, powerful_default_config)
+        await cg.register_component(powerful, powerful_default_config)
+        cg.add(powerful.set_parent_climate(var))
+        cg.add(var.set_powerful_switch(powerful))
+
+    # Eco switch
+    if config[CONF_SUPPORT_ECO]:
+        eco_default_config = { CONF_ID: config[CONF_ECO_ID],
+                               CONF_NAME: "- Eco Mode",
+                               CONF_DISABLED_BY_DEFAULT: False}
+        if device_config:
+            eco_default_config[CONF_DEVICE] = device_config
+        eco = cg.new_Pvariable(config[CONF_ECO_ID])
+        await switch.register_switch(eco, eco_default_config)
+        await cg.register_component(eco, eco_default_config)
+        cg.add(eco.set_parent_climate(var))
+        cg.add(var.set_eco_switch(eco))

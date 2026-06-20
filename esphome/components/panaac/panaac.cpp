@@ -35,6 +35,8 @@ namespace esphome
             ac_state.swing_h_pos = PANAAC_SWINGH_AUTO;
             ac_state.last_swing_v_pos = PANAAC_SWINGV_MIDDLE;
             ac_state.last_swing_h_pos = PANAAC_SWINGH_MIDDLE;
+            ac_state.powerful = false;
+            ac_state.eco = false;
 
             // fan level options
             FixedVector<const char *> fanlevel_options;
@@ -331,10 +333,25 @@ namespace esphome
             {
                 ac_state.swing_mode = climate::CLIMATE_SWING_HORIZONTAL;
             }
+            if (swing_v == PANAAC_SWINGV_AUTO && swing_h == PANAAC_SWINGH_AUTO)
+            {
+                ac_state.swing_mode = climate::CLIMATE_SWING_BOTH;
+            }
+            else if (swing_v == PANAAC_SWINGV_AUTO)
+            {
+                ac_state.swing_mode = climate::CLIMATE_SWING_VERTICAL;
+            }
+            else if (swing_h == PANAAC_SWINGH_AUTO)
+            {
+                ac_state.swing_mode = climate::CLIMATE_SWING_HORIZONTAL;
+            }
             else
             {
                 ac_state.swing_mode = climate::CLIMATE_SWING_OFF;
             }
+
+            ac_state.powerful = (state_bytes[PANAAC_BYTEPOS_POWERFUL] & PANAAC_POWERFUL_MASK);
+            ac_state.eco = (state_bytes[PANAAC_BYTEPOS_POWERFUL] & PANAAC_ECO_MASK);
 
             return true;
         }
@@ -537,7 +554,7 @@ namespace esphome
                     {
                         second_frame[PANAAC_BYTEPOS_SWINGH] |= PANAAC_SWINGH_AUTO;
                         ac_state.swing_h_pos = PANAAC_SWINGH_AUTO;
-                    }   
+                    }
                     break;
                 case climate::CLIMATE_SWING_BOTH:
                 default:
@@ -549,6 +566,11 @@ namespace esphome
                         ac_state.swing_h_pos = PANAAC_SWINGH_AUTO;
                     }
             }
+
+            if (ac_state.powerful)
+                second_frame[PANAAC_BYTEPOS_POWERFUL] |= PANAAC_POWERFUL_MASK;
+            if (ac_state.eco)
+                second_frame[PANAAC_BYTEPOS_POWERFUL] |= PANAAC_ECO_MASK;
 
             // checksum
             for (uint8_t i = 0; i < 18; i++) {
@@ -716,6 +738,11 @@ namespace esphome
             {
                 this->swingh_->set_swinghpos(ac_state.swing_h_pos);
             }
+
+            if (this->powerful_switch_)
+                this->powerful_switch_->publish_state(ac_state.powerful);
+            if (this->eco_switch_)
+                this->eco_switch_->publish_state(ac_state.eco);
         }
 
         void PanaACClimate::update_state()

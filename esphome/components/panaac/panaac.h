@@ -19,11 +19,30 @@
 #include "definitions.h"
 #include "extra.h"
 #include <cinttypes>
+#include "esphome/components/switch/switch.h"
 
 namespace esphome
 {
     namespace panaac
     {
+        class PanaACClimate;
+
+        class PanaACPowerful : public switch::Switch {
+        public:
+            PanaACClimate *parent;
+            void set_parent_climate(PanaACClimate *parent) { this->parent = parent; }
+            void turn_on() override { this->parent->set_powerful(true); }
+            void turn_off() override { this->parent->set_powerful(false); }
+        };
+
+        class PanaACEco : public switch::Switch {
+        public:
+            PanaACClimate *parent;
+            void set_parent_climate(PanaACClimate *parent) { this->parent = parent; }
+            void turn_on() override { this->parent->set_eco(true); }
+            void turn_off() override { this->parent->set_eco(false); }
+        };
+
         class PanaACClimate : public climate_ir::ClimateIR
         {
         public:
@@ -48,9 +67,24 @@ namespace esphome
             void set_fan_5level(bool fan_5level) { this->fan_5level_ = fan_5level; }
             void set_ir_control(bool ir_control) { this->ir_control_ = ir_control; }
 
+            void set_supports_powerful(bool supports_powerful) { this->supports_powerful_ = supports_powerful; }
+            void set_supports_eco(bool supports_eco) { this->supports_eco_ = supports_eco; }
+
+            void set_powerful(bool powerful) {
+                this->ac_state.powerful = powerful;
+                this->transmit_state();
+            }
+            void set_eco(bool eco) {
+                this->ac_state.eco = eco;
+                this->transmit_state();
+            }
+
             void set_fanlevel(PanaACFanLevel *fanlevel) { this->fanlevel_ = fanlevel; }
             void set_swingv(PanaACSwingV *swingv) { this->swingv_ = swingv; }
             void set_swingh(PanaACSwingH *swingh) { this->swingh_ = swingh; }
+
+            void set_powerful_switch(switch::Switch *powerful_switch) { this->powerful_switch_ = powerful_switch; }
+            void set_eco_switch(switch::Switch *eco_switch) { this->eco_switch_ = eco_switch; }
 
             void update_state();
             void transmit_data();
@@ -72,10 +106,14 @@ namespace esphome
             bool fan_5level_;
             bool ir_control_;
             bool supports_fan_only_;
+            bool supports_powerful_;
+            bool supports_eco_;
 
             PanaACFanLevel *fanlevel_{nullptr};
             PanaACSwingV *swingv_{nullptr};
             PanaACSwingH *swingh_{nullptr};
+            switch::Switch *powerful_switch_{nullptr};
+            switch::Switch *eco_switch_{nullptr};
         };
 
 
