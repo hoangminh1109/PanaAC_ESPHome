@@ -4,6 +4,16 @@
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/hoangminh1109)
 
+## IMPORTANT
+2nd generation of Panasonic AC IR Remote Controller for ESPHome available at [`PanaAC_v2_ESPHome`](https://github.com/hoangminh1109/PanaAC_v2_ESPHome)
+- PanaAC v2 addresses the earlier UI limitation of separate fan-level, vertical-swing, and horizontal-swing selects. It combines those controls in the climate entity through the [`PanaAC_v2_HA`](https://github.com/hoangminh1109/PanaAC_v2_HA) integration, providing a cleaner climate-card UI.
+
+    <img src="assets/screenshot_panaac_v2.png" alt="PanaAC v2" width="50%"> <img src="assets/screenshot_panaac_v2_tilecard.png" alt="PanaAC v2" width="32%">
+
+- The active development will be moved to PanaAC_v2. This repo will be kept as it is, no longer receive updates.
+
+------
+
 This is a custom ESPHome external component for controlling Panasonic air conditioners via infrared.
 
 It **inherits from ESPHome's `ClimateIR`** and adds support for:
